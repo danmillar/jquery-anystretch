@@ -71,7 +71,8 @@
                                           imgWidth = this.width || $(e.target).width();
                                           imgHeight = this.height || $(e.target).height();
                                           imgRatio = imgWidth / imgHeight;
-    
+                                          settings.imgWidth=imgWidth;
+                                          settings.imgHeight=imgHeight;
                                           _adjustBG(function() {
                                               self.fadeIn(settings.speed, function(){
                                                   // Remove the old images, if necessary.
@@ -102,33 +103,52 @@
                     $(window).resize(_adjustBG);
                 }
             }
+            function calculateDimensionsAndOffset(offset,availW,availH,imgW,imgH){
+                var ratioW=availW/imgW;
+                var ratioH=availH/imgH;
+                //take the ratio of the bigger axis in the current view
+                //with this we won`t need any conditional to ask for the viewport ratio
+                var ratio=Math.max(ratioW,ratioH);
+
+                /*we calculate how many pixels are left on axis and calculate the scale factor to expand these pixel to the full half width of the screen
+                this will ensure that there will be no area without image pixel. But be careful, if the offset is to big (in relation to the original
+                image, e.g. 1200px width and offset will be 1000px tp the left, 200px need to be spreaded to half of the screen)
+                the resultign scale factor on a screen with 2000px would be 1200*0.5/(1200*0.5-550)=500/50=10
+                so the image would ne scaled by factor 10! This is exponential to the border. But anyway if you would ever need
+                such a big offset: give it back to the designer to recompose in photoshop ;) */
+                var spaceLeftRatioX=imgW*0.5/(imgW/2-Math.abs(offset.x));
+                var spaceLeftRatioY=imgH*0.5/(imgH/2-Math.abs(offset.y));
+
+                //we will scale up the whole image to ensure that there will be no white space
+                var scaleImageFactor=Math.max(spaceLeftRatioX,spaceLeftRatioY)-1;
                 
+                var newWidth=imgW*ratio*(1+scaleImageFactor);
+                var newHeight=imgH*ratio*(1+scaleImageFactor);
+                //shiftX=shiftY=0 would be the center, we add our offsets, mapped to the current image scaling,
+                //an offset would be 200 instead of 100 if the image is scaled up with factor 2
+                var shiftX=(offset.x*ratio)/(availW-newWidth)*(1+scaleImageFactor);
+                var shiftY=-(offset.y*ratio)/(availH-newHeight)*(1+scaleImageFactor);
+                var newOffsetX=((availW-newWidth))*(0.5+shiftX);
+                var newOffsetY=((availH-newHeight))*(0.5+shiftY);
+
+                return {
+                    width:newWidth,
+                    height:newHeight,
+                    offsetX:newOffsetX,
+                    offsetY:newOffsetY
+                }
+            }
             function _adjustBG(fn) {
                 try {
-                    bgCSS = {left: 0, top: 0};
-                    bgWidth = _width();
-                    bgHeight = bgWidth / imgRatio;
-    
-                    // Make adjustments based on image ratio
-                    // Note: Offset code provided by Peter Baker (http://ptrbkr.com/). Thanks, Peter!
-                    if(bgHeight >= _height()) {
-                        bgOffset = (bgHeight - _height()) /2;
-                        if(settings.positionY == 'center' || settings.centeredY) { // 
-                            $.extend(bgCSS, {top: "-" + bgOffset + "px"});
-                        } else if(settings.positionY == 'bottom') {
-                            $.extend(bgCSS, {top: "auto", bottom: "0px"});
-                        }
-                    } else {
-                        bgHeight = _height();
-                        bgWidth = bgHeight * imgRatio;
-                        bgOffset = (bgWidth - _width()) / 2;
-                        if(settings.positionX == 'center' || settings.centeredX) {
-                            $.extend(bgCSS, {left: "-" + bgOffset + "px"});
-                        } else if(settings.positionX == 'right') {
-                            $.extend(bgCSS, {left: "auto", right: "0px"});
-                        }
-                    }
-    
+                    var offset={x:settings.offsetX,y:settings.offsetY,absolute:false};
+                    var measuredLayout=calculateDimensionsAndOffset(offset,_width(),_height(),settings.imgWidth,settings.imgHeight);
+                    console.log(measuredLayout);
+
+                    bgCSS = {left: measuredLayout.offsetX, top: measuredLayout.offsetY};
+                    bgWidth = measuredLayout.width //we need more space to accomplish the shifting
+                    bgHeight = measuredLayout.height;
+
+                  
                     container.children("img:not(.deleteable)").width( bgWidth ).height( bgHeight )
                                                        .filter("img").css(bgCSS);
                 } catch(err) {
