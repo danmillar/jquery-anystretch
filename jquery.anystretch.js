@@ -95,7 +95,11 @@
                     
                     // Attach the settings
                     container.data("settings", settings);
-                        
+                    
+                    img.one('error', function() {
+                        $(this).attr("src", settings.fallback);
+                    });
+                    
                     img.attr("src", src); // Hack for IE img onload event
                     
                     // Adjust the background size when the window is resized or orientation has changed (iOS)
