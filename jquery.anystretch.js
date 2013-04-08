@@ -16,7 +16,7 @@
 ;(function($) {
     
     $.fn.anystretch = function(src, options, callback) {
-        var isBody = this.selector.length ? false : true; // Decide whether anystretch is being called on an element or not
+        var isBody = typeof this.context === undefined; // Decide whether anystretch is being called on an element or not
 
         return this.each(function(i){
             var defaultSettings = {
