@@ -9,25 +9,25 @@ An example is provided within this package. To see it in action go to: "http://w
 
 h2. Options
 
-h3. positionX
+h3. filename
+
+The name of the data attribute that Anystretch will use for the image name, if none is supplied in the src. (type=String, default=stretch)
+
+h3. positionx
 
 This parameter controls how we position the image on the X axis. (type=String, options=left|center|right, default=center)
 
-h3. positionY
+h3. positiony
 
 This parameter controls how we position the image on the Y axis. (type=String, options=top|center|bottom, default=center)
+
+h3. elposition (only when not used on the body)
+
+This is the css position given to the containing element when used on anything except the body. (type=String, default=relative)
 
 h3. speed
 
 This is the speed at which the image will fade in, after downloading is complete. Integers are accepted, as well as standard jQuery speed strings (slow, normal, fast). (type=Integer, default=0)
-
-h3. elPosition (only when not used on the body)
-
-This is the css position given to the containing element when used on anything except the body. (type=String, default=relative)
-
-h3. dataName
-
-The name of the data attribute that Anystretch will use for the image name, if none is supplied in the src. (type=String, default=stretch)
 
 h2. Setup
 
@@ -63,8 +63,9 @@ If you require Anystretch to work on one or more elements inside the page, rathe
 </script>
 </code></pre>
 
-As of Version 1.2, Anystretch can also determine the image to use, via a data attribute. By default, Anystretch will use data-stretch although this can be changed by setting the dataName in the settings.
+Anystretch allows the user to define settings using data-* attribute:
 
+<pre><code><div class="div01 stretchMe" data-filename="img01.jpg" data-positionx="center" data-positiony="bottom" data-speed="3000" data-elposition="relative">...</div></code></pre>
 
 <pre><code><script type="text/javascript">
   $(".stretchMe").anystretch();
