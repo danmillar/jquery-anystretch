@@ -65,9 +65,7 @@ If you require Anystretch to work on one or more elements inside the page, rathe
 
 Anystretch allows the user to define settings using data-* attribute:
 
-<pre><code>
-  <div class="div01 stretchMe" data-filename="img01.jpg" data-positionx="center" data-positiony="bottom" data-speed="3000" data-elposition="relative">...</div>
-</code></pre>
+<pre><code><div class="div01 stretchMe" data-filename="img01.jpg" data-positionx="center" data-positiony="bottom" data-speed="3000" data-elposition="relative">...</div></code></pre>
 
 <pre><code><script type="text/javascript">
   $(".stretchMe").anystretch();
