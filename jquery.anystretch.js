@@ -20,25 +20,30 @@
     $.fn.anystretch = function(src, options, callback) {
         var isBody = this.selector.length ? false : true; // Decide whether anystretch is being called on an element or not
 
-        return this.each(function(i){
+        return this.each(function(i) {
             var defaultSettings = {
-                positionX: 'center',     // Should we center the image on the X axis?
-                positionY: 'center',     // Should we center the image on the Y axis?
-                speed: 0,                // fadeIn speed for background after image loads (e.g. "fast" or 500)
-                elPosition: 'relative',  // position of containing element when not being added to the body
-                dataName: 'stretch'      // The data-* name used to search for
+                filename: "",            // Path to file
+                positionx: "center",     // Should we center the image on the X axis?
+                positiony: "center",     // Should we center the image on the Y axis?
+                elposition: "relative",  // position of containing element when not being added to the body                
+                speed: 0                 // fadeIn speed for background after image loads (e.g. "fast" or 500)
             },
-            el = $(this),
-            container = isBody ? $('.anystretch') : el.children(".anystretch"),
-            settings = container.data("settings") || defaultSettings, // If this has been called once before, use the old settings as the default
-            existingSettings = container.data('settings'),
-            imgRatio, bgImg, bgWidth, bgHeight, bgOffset, bgCSS;
+                el = $(this),
+                container = isBody ? $(".anystretch") : el.children(".anystretch"),
+                settings = container.data("settings") || defaultSettings, // If this has been called once before, use the old settings as the default
+                existingSettings = container.data("settings"),
+                imgRatio, 
+                bgImg, 
+                bgWidth, 
+                bgHeight, 
+                bgOffset, 
+                bgCSS;
 
             // Extend the settings with those the user has provided
-            if(options && typeof options == "object") $.extend(settings, options);
+            if (options && typeof options == "object") $.extend(settings, options);
             
             // Just in case the user passed in a function without options
-            if(options && typeof options == "function") callback = options;
+            if (options && typeof options == "function") callback = options;
         
             // Initialize
             $(document).ready(_init);
@@ -48,16 +53,16 @@
         
             function _init() {
                 // Prepend image, wrapped in a DIV, with some positioning and zIndex voodoo
-                if(src || el.length >= 1) {
+                if (src || el.length >= 1) {
                     var img;
                     
-                    if(!isBody) {
-                        // If not being added to the body set position to elPosition (default: relative) to keep anystretch contained
-                        el.css({position: settings.elPosition, background: "none"});
+                    if (!isBody) {
+                        // If not being added to the body set position to elposition (default: relative) to keep anystretch contained
+                        el.css({position: settings.elposition, background: "none"});
                     }
                     
                     // If this is the first time that anystretch is being called
-                    if(container.length == 0) {
+                    if (container.length == 0) {
                         container = $("<div />").attr("class", "anystretch")
                                                 .css({left: 0, top: 0, position: (isBody ? "fixed" : "absolute"), overflow: "hidden", zIndex: (isBody ? -999999 : -999998), margin: 0, padding: 0, height: "100%", width: "100%"});
                     } else {
@@ -66,7 +71,7 @@
                     }
     
                     img = $("<img />").css({position: "absolute", display: "none", margin: 0, padding: 0, border: "none", zIndex: -999999})
-                                      .bind("load", function(e) {                                          
+                                      .on("load", function(e) {                                          
                                           var self = $(this),
                                               imgWidth, imgHeight;
         
@@ -77,10 +82,12 @@
     
                                           _adjustBG(function() {
                                               self.fadeIn(settings.speed, function(){
-                                                  // Remove the old images, if necessary.
-                                                  container.find('.deleteable').remove();
-                                                  // Callback
-                                                  if(typeof callback == "function") callback();
+                                                // Remove the old images, if necessary.
+                                                container.find(".deleteable").remove();
+                                                // Callback
+                                                if (typeof callback == "function") {
+                                                    callback();
+                                                }
                                               });
                                           });
                                           
@@ -89,24 +96,33 @@
                      
                     // Append the container to the body, if it's not already there
                     if(el.children(".anystretch").length == 0) {
-                        if(isBody) {
-                            $('body').append(container);
+                        if (isBody) {
+                            $("body").append(container);
                         } else {
                             el.append(container);
                         }
                     }
-                    
+
+                    // Look for data attributes to override default settings
+                    for (property in defaultSettings) {
+                        if (el.data(property)) {                            
+                            defaultSettings[property] = el.data(property);                            
+                        }
+                    }
+
                     // Attach the settings
                     container.data("settings", settings);
-                        
+                    
                     var imgSrc = "";
-                    if(src) {
+                    
+                    if (src) {
                         imgSrc = src;
-                    }else if(el.data(settings.dataName)) {
-                        imgSrc = el.data(settings.dataName);
-                    }else{
+                    } else if (settings.filename.length > 0) {
+                        imgSrc = settings.filename;  
+                    } else {
                         return;
                     }
+
                     img.attr("src", imgSrc); // Hack for IE img onload event
                     
                     // Adjust the background size when the window is resized or orientation has changed (iOS)
@@ -122,26 +138,30 @@
     
                     // Make adjustments based on image ratio
                     // Note: Offset code provided by Peter Baker (http://ptrbkr.com/). Thanks, Peter!
-                    if(bgHeight >= _height()) {
+                    if (bgHeight >= _height()) {
                         bgOffset = (bgHeight - _height()) /2;
-                        if(settings.positionY == 'center' || settings.centeredY) { // 
+                        if (settings.positiony == "center" || settings.centeredY) { // 
                             $.extend(bgCSS, {top: "-" + bgOffset + "px"});
-                        } else if(settings.positionY == 'bottom') {
+                        } else if (settings.positiony == 'bottom') {
                             $.extend(bgCSS, {top: "auto", bottom: "0px"});
                         }
                     } else {
                         bgHeight = _height();
                         bgWidth = bgHeight * imgRatio;
                         bgOffset = (bgWidth - _width()) / 2;
-                        if(settings.positionX == 'center' || settings.centeredX) {
+                        if (settings.positionx == "center" || settings.centeredX) {
                             $.extend(bgCSS, {left: "-" + bgOffset + "px"});
-                        } else if(settings.positionX == 'right') {
+                        } else if (settings.positionx == 'right') {
                             $.extend(bgCSS, {left: "auto", right: "0px"});
                         }
                     }
     
-                    container.children("img:not(.deleteable)").width( bgWidth ).height( bgHeight )
-                                                       .filter("img").css(bgCSS);
+                    container.children("img:not(.deleteable)")
+                             .width(bgWidth)
+                             .height(bgHeight)
+                             .filter("img")
+                             .css(bgCSS);
+
                 } catch(err) {
                     // IE7 seems to trigger _adjustBG before the image is loaded.
                     // This try/catch block is a hack to let it fail gracefully.
@@ -164,7 +184,6 @@
     
     $.anystretch = function(src, options, callback) {
         var el = ("onorientationchange" in window) ? $(document) : $(window); // hack to acccount for iOS position:fixed shortcomings
-        
         el.anystretch(src, options, callback);
     };
   

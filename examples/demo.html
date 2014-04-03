@@ -29,14 +29,14 @@
 		
 		<h1>Solution: <em>using jQuery Anystretch</em></h1>
 		
-	    <div class="div01 stretchMe" data-stretch="img01.jpg">
+	    <div class="div01 stretchMe" data-filename="img01.jpg" data-positionx="center" data-positiony="bottom" data-speed="3000" data-elposition="relative">
 			<div>
 	        	<h2>Element with hardly any content</h2>
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.</p>
 			</div>
 	    </div>
 	
-		<div class="div02 stretchMe" data-stretch="img02.jpg">
+		<div class="div02 stretchMe" data-filename="img02.jpg" data-speed="4000">
 			<div>
 	        	<h2>Element with much more content</h2>
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
@@ -44,7 +44,7 @@
 			</div>
 	    </div>
 	
-		<div class="div03 stretchMe" data-stretch="img03.jpg">
+		<div class="div03 stretchMe" data-filename="img03.jpg">
 			<div>
 	        	<h2>Element with loads and loads of content</h2>
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.</p>
@@ -59,11 +59,12 @@
 		<script src="../jquery.anystretch.js"></script>
 		
 		<script>
-		    // $('.div01').anystretch("img01.jpg");
-		    // $('.div02').anystretch("img02.jpg");
-		    // $('.div03').anystretch("img03.jpg");
 
-		    $(".stretchMe").anystretch();
+		    $('.div01').anystretch("img01.jpg");
+		    $('.div02').anystretch("img02.jpg");
+		    $('.div03').anystretch("img03.jpg");
+
+		    //$(".stretchMe").anystretch();
 	    </script>
 
 	</body>
