@@ -154,7 +154,7 @@
                 if (typeof fn == "function") fn();
 
                 // Execute the onAdjust callback
-                if (typeof options.onAdjust == "function") options.onAdjust();
+                if (options && typeof options.onAdjust == "function") options.onAdjust();
             }
 
             function _width() {
