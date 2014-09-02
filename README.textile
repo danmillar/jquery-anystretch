@@ -29,6 +29,11 @@ h3. dataName
 
 The name of the data attribute that Anystretch will use for the image name, if none is supplied in the src. (type=String, default=stretch)
 
+h3. onAdjust
+
+Gets called anytime Anystretch adjusts the size of the background image.
+(type=Function, default=$.noop)
+
 h2. Setup
 
 Include the jQuery library and Anystretch plugin files in your webpage (preferably at the bottom of the page, before the closing BODY tag):
