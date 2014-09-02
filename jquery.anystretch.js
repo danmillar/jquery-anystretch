@@ -1,6 +1,8 @@
 /*
  * jQuery Anystretch
- * Version 1.2 (@jbrooksuk / me.itslimetime.com)
+ * Version 1.3 (@abconrad)
+ * https://github.com/abconrad/jquery-anystretch
+ * (@jbrooksuk / me.itslimetime.com)
  * https://github.com/jbrooksuk/jquery-anystretch
  * Based on Dan Millar's Port
  * https://github.com/danmillar/jquery-anystretch
