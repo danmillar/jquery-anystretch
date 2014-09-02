@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Anystretch onAdjust Demo</title>
+    <style type="text/css" media="screen">
+        * { margin:0; padding:0; }
+        body { background:#ccc; color:#fff; font:1em/1.4em Georgia, 'Times New Roman', serif; }
+        h1, div + p { color:#fff; text-align:center; }
+        h1 { font-size:3.2em; padding:5% 20% 0 20%; }
+        .home-header-img {width: 100%; height: 100%; background-color: red;}
+    </style>
+</head>
+<body>
+<section class='home-header-img'></section>
+<script src="../lib/jquery-1.7.1.min.js"></script>
+<script src="../jquery.anystretch.js"></script>
+
+<script>
+$(document).ready(function(){
+    $('.home-header-img').anystretch(
+        'img01.jpg',
+        {
+            elPosition: 'absolute',
+            onAdjust: function () {
+                var h = $(window).height(),
+                    w = $(window).width();
+                $('.home-header-img').find('h1').remove();
+                $('.home-header-img')
+                    .append('<h1>Height: ' + h + ' Width: ' + w + '</h1>');
+            }
+        }
+    );
+});
+</script>
+
+</body>
+</html>
