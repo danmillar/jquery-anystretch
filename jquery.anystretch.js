@@ -22,11 +22,13 @@
 
         return this.each(function(i){
             var defaultSettings = {
-                positionX: 'center',     // Should we center the image on the X axis?
-                positionY: 'center',     // Should we center the image on the Y axis?
-                speed: 0,                // fadeIn speed for background after image loads (e.g. "fast" or 500)
-                elPosition: 'relative',  // position of containing element when not being added to the body
-                dataName: 'stretch'      // The data-* name used to search for
+                positionX: 'center',                        // Should we center the image on the X axis?
+                positionY: 'center',                        // Should we center the image on the Y axis?
+                speed: 0,                                   // fadeIn speed for background after image loads (e.g. "fast" or 500)
+                elPosition: 'relative',                     // position of containing element when not being added to the body
+                dataName: 'stretch',                        // The data-* name used to search for
+                responsiveDataName: 'stretch-responsive',    // The data-* name used for responsive tags
+                nonbgDataName: 'stretch-nonbg'    // The data-* name used for responsive tags
             },
             el = $(this),
             container = isBody ? $('.anystretch') : el.children(".anystretch"),
@@ -41,8 +43,7 @@
             if(options && typeof options == "function") callback = options;
         
             // Initialize
-            $(document).ready(_init);
-      
+            $(document).ready(_init);      
             // For chaining
             return this;
         
@@ -50,6 +51,8 @@
                 // Prepend image, wrapped in a DIV, with some positioning and zIndex voodoo
                 if(src || el.length >= 1) {
                     var img;
+
+                    settings.screenSizes = [];
                     
                     if(!isBody) {
                         // If not being added to the body set position to elPosition (default: relative) to keep anystretch contained
@@ -98,20 +101,43 @@
                     
                     // Attach the settings
                     container.data("settings", settings);
-                        
+
                     var imgSrc = "";
                     if(src) {
                         imgSrc = src;
                     }else if(el.data(settings.dataName)) {
                         imgSrc = el.data(settings.dataName);
-                    }else{
+                    }
+
+                    if(el.data(settings.responsiveDataName)) {
+                        var responsive = el.data(settings.responsiveDataName).split(',');
+                        var windowWidth = $(window).width();
+                        for(var i=0; i < responsive.length; i++){
+                            var imgSize = responsive[i].split(" ").filter(function(v){return v!==''});
+                            settings.screenSizes.push([parseInt(imgSize[1].replace('w','')), imgSize[0]]);
+                            if(windowWidth > parseInt(imgSize[1].replace('w',''))){
+                                imgSrc = imgSize[0];
+                            }
+                        }
+                    }
+                    if(el.data(settings.nonbgDataName)){
+                        container.addClass('nonbg');
+                    }
+
+                    if(!imgSrc){
                         return;
                     }
-                    img.attr("src", imgSrc); // Hack for IE img onload event
                     
                     // Adjust the background size when the window is resized or orientation has changed (iOS)
                     $(window).resize(_adjustBG);
+
+                    img.attr("src", imgSrc); // Hack for IE img onload event
+
                 }
+            }
+
+            function _responsive(){
+
             }
                 
             function _adjustBG(fn) {
@@ -119,7 +145,7 @@
                     bgCSS = {left: 0, top: 0};
                     bgWidth = _width();
                     bgHeight = bgWidth / imgRatio;
-    
+
                     // Make adjustments based on image ratio
                     // Note: Offset code provided by Peter Baker (http://ptrbkr.com/). Thanks, Peter!
                     if(bgHeight >= _height()) {
@@ -139,9 +165,22 @@
                             $.extend(bgCSS, {left: "auto", right: "0px"});
                         }
                     }
-    
+
+                    if(el.data(settings.responsiveDataName)){
+                        for(var i =0; i < settings.screenSizes.length; i++){
+                            if($(window).width() > settings.screenSizes[i][0]){
+                                imgSrc = settings.screenSizes[i][1];
+                                break;
+                            }
+                        }
+                    }
+
                     container.children("img:not(.deleteable)").width( bgWidth ).height( bgHeight )
                                                        .filter("img").css(bgCSS);
+
+                    if(imgSrc){
+                        container.children("img:not(.deleteable)").filter("img").attr("src", settings.screenSizes[i][1]);
+                    }
                 } catch(err) {
                     // IE7 seems to trigger _adjustBG before the image is loaded.
                     // This try/catch block is a hack to let it fail gracefully.

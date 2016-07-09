@@ -21,6 +21,11 @@
 			a:hover { background:#fff; }
 			div { background:yellow; border:10px solid #fff; margin:5%; }
 			div div { background:rgba(0,0,0,0.6); border:none; margin:0 0 0 50%; padding:6% 2%; }
+			.card{background:#000;}
+			.card div{margin:0;}
+			.card .anystretch.nonbg{z-index:1 !important;}
+			.card p{padding:20px;}
+			.card h2{padding:20px 20px 0 20px;}
 		</style>
 		
 	</head>
@@ -51,6 +56,14 @@
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 			</div>
+	    </div>
+
+		<div class="card">
+		    <div class="stretchMe" data-stretch-nonbg="true" data-stretch-responsive="img02.jpg 1200w,img03.jpg 800w,img01.jpg 0w"></div>
+		    <h2>Element above content</h2>
+		    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.</p>
+	    </div>
+			
 	    </div>
 	
 		<p>This is an example page by <a href="http://elliotjaystocks.com/">Elliot Jay Stocks</a> showing the benefit of <a href="https://github.com/danmillar/jquery-anystretch">jQuery Anystretch</a>, <a href="http://decode.uk.com/">Decode</a>&#8217;s fork of <a href="http://srobbin.com/blog/jquery-plugins/jquery-backstretch/">jQuery Backstretch by Scott Robbin</a>. For context, please refer to <a href="http://elliotjaystocks.com/blog/better-background-images-for-responsive-web-design/">this blog post</a>. Photos by <a href="http://www.flickr.com/photos/elliotjaystocks/">EJS</a>. <strong>Can&#8217;t see the benefit? Refer to <a href="problem1.html">the problem with inline images</a> and <a href="problem2.html">the problem with CSS&#8217; <em>background-size</em> property</a>.</strong></p>
