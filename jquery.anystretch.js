@@ -1,12 +1,13 @@
 /*
  * jQuery Anystretch
- * Version 1.2 (@jbrooksuk / me.itslimetime.com)
- * https://github.com/jbrooksuk/jquery-anystretch
+ * Version 1.2.5 (@caleuanhopkins / callumhopkins.com)
+ * https://github.com/caleuanhopkins/jquery-anystretch
  * Based on Dan Millar's Port
  * https://github.com/danmillar/jquery-anystretch
  *
  * Add a dynamically-resized background image to the body
- * of a page or any other block level element within it
+ * of a page or any other block level element within it. Now
+ * with responsive image features.
  *
  * Copyright (c) 2012 Dan Millar (@danmillar / decode.uk.com)
  * Dual licensed under the MIT and GPL licenses.
@@ -121,7 +122,9 @@
                         }
                     }
                     if(el.data(settings.nonbgDataName)){
-                        container.addClass('nonbg');
+                        container.parent().css({position: "relative", overflow:"hidden"})
+                        container.addClass('nonbg').css({zIndex:1, position: "relative"});
+                        img.css({zIndex:1, position: "relative"});
                     }
 
                     if(!imgSrc){
@@ -134,10 +137,6 @@
                     img.attr("src", imgSrc); // Hack for IE img onload event
 
                 }
-            }
-
-            function _responsive(){
-
             }
                 
             function _adjustBG(fn) {

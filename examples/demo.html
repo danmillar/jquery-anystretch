@@ -23,9 +23,10 @@
 			div div { background:rgba(0,0,0,0.6); border:none; margin:0 0 0 50%; padding:6% 2%; }
 			.card{background:#000;}
 			.card div{margin:0;}
-			.card .anystretch.nonbg{z-index:1 !important;}
 			.card p{padding:20px;}
 			.card h2{padding:20px 20px 0 20px;}
+			.card .nonbg{padding:0;}
+			.card .stretchMe{max-height:300px; height:100%; padding:0;}
 		</style>
 		
 	</head>
@@ -60,8 +61,8 @@
 
 		<div class="card">
 		    <div class="stretchMe" data-stretch-nonbg="true" data-stretch-responsive="img02.jpg 1200w,img03.jpg 800w,img01.jpg 0w"></div>
-		    <h2>Element above content</h2>
-		    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.</p>
+		    <h2>Image non-background and reponsive sizes</h2>
+		    <p>Resize the screen to see an example of images switching out depending on the size of screen. This behaviour matches the methodology outlined by <a href="http://alistapart.com/article/responsive-images-in-practice" target="_blank">Eric Portis in his 2014 article "Responsive Images in Practice"</a>. This option allows material like card designs with fully responsive liquid style images.</p>
 	    </div>
 			
 	    </div>

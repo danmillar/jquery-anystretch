@@ -71,6 +71,24 @@ As of Version 1.2, Anystretch can also determine the image to use, via a data at
 </script>
 </code></pre>
 
+<pre><code><div class="stretchMe" data-stretch="img03.jpg"></div></code></pre>
+
+h4. Responsive Images
+
+As of version 1.2.5, Anystretch now supports multiple images for reducing data transfer sizes on small screen devices. Behaviour of this matches the suggestions <a href="http://alistapart.com/article/responsive-images-in-practice" target="_blank">Eric Portis outlined in his 2014 article "Responsive Images in Practice"</a>. 
+
+<pre><code><div class="stretchMe" data-stretch-responsive="img02.jpg 1200w,img03.jpg 800w,img01.jpg 0w"></div></code></pre>
+
+*NOTE:* you *must* have <code>0w</code> option as this is the fallback image for all screens sizes.
+
+h4. Non-Background Behaviour 
+
+Want Anystretch behaviour on your material card design?
+
+<pre><code><div class="stretchMe" data-stretch-nonbg="true"></div></code></pre>
+
+Image will scale with screen size and will sit above content. See the <code>demo.html</code> file in the "examples" folder of this repo.
+
 h2. Changelog
 
 h3. Version 1.2
