@@ -1,12 +1,13 @@
 /*
  * jQuery Anystretch
- * Version 1.2 (@jbrooksuk / me.itslimetime.com)
- * https://github.com/jbrooksuk/jquery-anystretch
+ * Version 1.2.5 (@caleuanhopkins / callumhopkins.com)
+ * https://github.com/caleuanhopkins/jquery-anystretch
  * Based on Dan Millar's Port
  * https://github.com/danmillar/jquery-anystretch
  *
  * Add a dynamically-resized background image to the body
- * of a page or any other block level element within it
+ * of a page or any other block level element within it. Now
+ * with responsive image features.
  *
  * Copyright (c) 2012 Dan Millar (@danmillar / decode.uk.com)
  * Dual licensed under the MIT and GPL licenses.
@@ -18,21 +19,25 @@
 ;(function($) {
     
     $.fn.anystretch = function(src, options, callback) {
-        var isBody = this.selector.length ? false : true; // Decide whether anystretch is being called on an element or not
+        var isBody = false; //this.length ? false : true; // Decide whether anystretch is being called on an element or not
 
         return this.each(function(i){
             var defaultSettings = {
-                positionX: 'center',     // Should we center the image on the X axis?
-                positionY: 'center',     // Should we center the image on the Y axis?
-                speed: 0,                // fadeIn speed for background after image loads (e.g. "fast" or 500)
-                elPosition: 'relative',  // position of containing element when not being added to the body
-                dataName: 'stretch'      // The data-* name used to search for
+                positionX: 'center',                        // Should we center the image on the X axis?
+                positionY: 'center',                        // Should we center the image on the Y axis?
+                speed: 0,                                   // fadeIn speed for background after image loads (e.g. "fast" or 500)
+                elPosition: 'relative',                     // position of containing element when not being added to the body
+                dataName: 'stretch',                        // The data-* name used to search for
+                responsiveDataName: 'stretch-responsive',    // The data-* name used for responsive tags
+                nonbgDataName: 'stretch-nonbg',    // The data-* name used for responsive tags
+                imgAlt: 'stretch-alt',
+                imgTitle: 'stretch-title'
             },
             el = $(this),
             container = isBody ? $('.anystretch') : el.children(".anystretch"),
             settings = container.data("settings") || defaultSettings, // If this has been called once before, use the old settings as the default
             existingSettings = container.data('settings'),
-            imgRatio, bgImg, bgWidth, bgHeight, bgOffset, bgCSS;
+            imgRatio, bgImg, bgWidth, bgHeight, bgOffset, bgCSS, imgSrc;
 
             // Extend the settings with those the user has provided
             if(options && typeof options == "object") $.extend(settings, options);
@@ -41,8 +46,7 @@
             if(options && typeof options == "function") callback = options;
         
             // Initialize
-            $(document).ready(_init);
-      
+            $(document).ready(_init);      
             // For chaining
             return this;
         
@@ -50,6 +54,8 @@
                 // Prepend image, wrapped in a DIV, with some positioning and zIndex voodoo
                 if(src || el.length >= 1) {
                     var img;
+
+                    settings.screenSizes = [];
                     
                     if(!isBody) {
                         // If not being added to the body set position to elPosition (default: relative) to keep anystretch contained
@@ -98,19 +104,35 @@
                     
                     // Attach the settings
                     container.data("settings", settings);
-                        
-                    var imgSrc = "";
+
                     if(src) {
                         imgSrc = src;
                     }else if(el.data(settings.dataName)) {
                         imgSrc = el.data(settings.dataName);
-                    }else{
+                    }
+
+                    if(el.data(settings.nonbgDataName)){
+                        container.parent().css({position: "relative", overflow:"hidden"})
+                        container.addClass('nonbg').css({zIndex:1, position: "relative"});
+                        img.css({zIndex:1, position: "relative"});
+                    }
+
+                    if(!imgSrc){
                         return;
                     }
-                    img.attr("src", imgSrc); // Hack for IE img onload event
                     
                     // Adjust the background size when the window is resized or orientation has changed (iOS)
                     $(window).resize(_adjustBG);
+
+                    img.attr("src", imgSrc); // Hack for IE img onload event
+                    console.log(el.data('stretch-alt'));
+                    if(typeof el.data(settings.imgAlt) != 'undefined'){
+                        img.attr("alt", el.data(settings.imgAlt));
+                    }
+                    if(typeof el.data(settings.imgTitle)!= 'undefined'){
+                        img.attr("title", el.data(settings.imgTitle));
+                    }
+
                 }
             }
                 
@@ -119,7 +141,7 @@
                     bgCSS = {left: 0, top: 0};
                     bgWidth = _width();
                     bgHeight = bgWidth / imgRatio;
-    
+
                     // Make adjustments based on image ratio
                     // Note: Offset code provided by Peter Baker (http://ptrbkr.com/). Thanks, Peter!
                     if(bgHeight >= _height()) {
@@ -139,10 +161,12 @@
                             $.extend(bgCSS, {left: "auto", right: "0px"});
                         }
                     }
-    
+
                     container.children("img:not(.deleteable)").width( bgWidth ).height( bgHeight )
                                                        .filter("img").css(bgCSS);
+
                 } catch(err) {
+                    console.log(err);
                     // IE7 seems to trigger _adjustBG before the image is loaded.
                     // This try/catch block is a hack to let it fail gracefully.
                 }
