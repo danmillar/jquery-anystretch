@@ -19,7 +19,7 @@
 ;(function($) {
     
     $.fn.anystretch = function(src, options, callback) {
-        var isBody = this.selector.length ? false : true; // Decide whether anystretch is being called on an element or not
+        var isBody = false; //this.length ? false : true; // Decide whether anystretch is being called on an element or not
 
         return this.each(function(i){
             var defaultSettings = {
@@ -29,13 +29,15 @@
                 elPosition: 'relative',                     // position of containing element when not being added to the body
                 dataName: 'stretch',                        // The data-* name used to search for
                 responsiveDataName: 'stretch-responsive',    // The data-* name used for responsive tags
-                nonbgDataName: 'stretch-nonbg'    // The data-* name used for responsive tags
+                nonbgDataName: 'stretch-nonbg',    // The data-* name used for responsive tags
+                imgAlt: 'stretch-alt',
+                imgTitle: 'stretch-title'
             },
             el = $(this),
             container = isBody ? $('.anystretch') : el.children(".anystretch"),
             settings = container.data("settings") || defaultSettings, // If this has been called once before, use the old settings as the default
             existingSettings = container.data('settings'),
-            imgRatio, bgImg, bgWidth, bgHeight, bgOffset, bgCSS;
+            imgRatio, bgImg, bgWidth, bgHeight, bgOffset, bgCSS, imgSrc;
 
             // Extend the settings with those the user has provided
             if(options && typeof options == "object") $.extend(settings, options);
@@ -103,24 +105,12 @@
                     // Attach the settings
                     container.data("settings", settings);
 
-                    var imgSrc = "";
                     if(src) {
                         imgSrc = src;
                     }else if(el.data(settings.dataName)) {
                         imgSrc = el.data(settings.dataName);
                     }
 
-                    if(el.data(settings.responsiveDataName)) {
-                        var responsive = el.data(settings.responsiveDataName).split(',');
-                        var windowWidth = $(window).width();
-                        for(var i=0; i < responsive.length; i++){
-                            var imgSize = responsive[i].split(" ").filter(function(v){return v!==''});
-                            settings.screenSizes.push([parseInt(imgSize[1].replace('w','')), imgSize[0]]);
-                            if(windowWidth > parseInt(imgSize[1].replace('w',''))){
-                                imgSrc = imgSize[0];
-                            }
-                        }
-                    }
                     if(el.data(settings.nonbgDataName)){
                         container.parent().css({position: "relative", overflow:"hidden"})
                         container.addClass('nonbg').css({zIndex:1, position: "relative"});
@@ -135,6 +125,13 @@
                     $(window).resize(_adjustBG);
 
                     img.attr("src", imgSrc); // Hack for IE img onload event
+                    console.log(el.data('stretch-alt'));
+                    if(typeof el.data(settings.imgAlt) != 'undefined'){
+                        img.attr("alt", el.data(settings.imgAlt));
+                    }
+                    if(typeof el.data(settings.imgTitle)!= 'undefined'){
+                        img.attr("title", el.data(settings.imgTitle));
+                    }
 
                 }
             }
@@ -165,22 +162,11 @@
                         }
                     }
 
-                    if(el.data(settings.responsiveDataName)){
-                        for(var i =0; i < settings.screenSizes.length; i++){
-                            if($(window).width() > settings.screenSizes[i][0]){
-                                imgSrc = settings.screenSizes[i][1];
-                                break;
-                            }
-                        }
-                    }
-
                     container.children("img:not(.deleteable)").width( bgWidth ).height( bgHeight )
                                                        .filter("img").css(bgCSS);
 
-                    if(imgSrc){
-                        container.children("img:not(.deleteable)").filter("img").attr("src", settings.screenSizes[i][1]);
-                    }
                 } catch(err) {
+                    console.log(err);
                     // IE7 seems to trigger _adjustBG before the image is loaded.
                     // This try/catch block is a hack to let it fail gracefully.
                 }
